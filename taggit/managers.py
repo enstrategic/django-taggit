@@ -128,7 +128,7 @@ class _TaggableManager(models.Manager):
         return self.through.lookup_kwargs(self.instance)
 
     @require_instance_manager
-    def add(self, *tags):
+    def add(self, *tags, **through_or_tag_kwargs):
         db = router.db_for_write(self.through, instance=self.instance)
 
         tag_objs = self._to_tag_model_instances(tags)
@@ -158,7 +158,7 @@ class _TaggableManager(models.Manager):
             model=self.through.tag_model(), pk_set=new_ids, using=db,
         )
 
-    def _to_tag_model_instances(self, tags):
+    def _to_tag_model_instances(self, tags, **through_or_tag_kwargs):
         """
         Takes an iterable containing either strings, tag objects, or a mixture
         of both and returns set of tag objects.
@@ -206,9 +206,9 @@ class _TaggableManager(models.Manager):
                 try:
                     tag = manager.get(name__iexact=new_tag)
                 except self.through.tag_model().DoesNotExist:
-                    tag = manager.create(name=new_tag)
+                    tag = manager.create(name=new_tag, **through_or_tag_kwargs)
             else:
-                tag = manager.create(name=new_tag)
+                tag = manager.create(name=new_tag, **through_or_tag_kwargs)
 
             tag_objs.add(tag)
 

@@ -131,7 +131,7 @@ class _TaggableManager(models.Manager):
     def add(self, *tags, **through_or_tag_kwargs):
         db = router.db_for_write(self.through, instance=self.instance)
 
-        tag_objs = self._to_tag_model_instances(tags)
+        tag_objs = self._to_tag_model_instances(tags, **through_or_tag_kwargs)
         new_ids = {t.pk for t in tag_objs}
 
         # NOTE: can we hardcode 'tag_id' here or should the column name be got

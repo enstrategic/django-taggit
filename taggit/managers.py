@@ -189,7 +189,7 @@ class _TaggableManager(models.Manager):
 
             for name in str_tags:
                 try:
-                    tag = manager.get(name__iexact=name)
+                    tag = manager.get(name__iexact=name, **through_or_tag_kwargs)
                     existing.append(tag)
                 except self.through.tag_model().DoesNotExist:
                     tags_to_create.append(name)
